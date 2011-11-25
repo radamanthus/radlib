@@ -9,6 +9,9 @@ M.table = tableExt
 local ioExt = require "io_ext"
 M.io = ioExt
 
+local timeExt = require "time_ext"
+M.time = timeExt
+
 
 local debug = function( msg )
   native.showAlert("DEBUG", msg, {"OK"})
