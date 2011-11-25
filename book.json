@@ -1,0 +1,73 @@
+{
+  "title" : "Slide Show",
+  "type" : "slideshow",
+  "width" : 960,
+  "height" : 640,
+  "default_orientation" : "landscapeLeft",
+  "supported_orientations" : ["landscapeLeft", "landscapeRight"],
+  "transition" : "overFromRight",
+  "transitionDelay" : 3000,
+  "assets" : [],
+  "pages" : [
+    {
+      "background" : {
+        "image" : "photo1"
+      },
+      "objects" : []
+    },
+    {
+      "background" : {
+        "image" : "photo2",
+        "width" : 634,
+        "height" : 640,
+        "fill" : "fill",
+        "fillColor" : {
+          "red" : 0,
+          "green" : 0,
+          "blue" : 0
+        }
+      },
+      "objects" : []
+    },
+    {
+      "background" : {
+        "image" : "photo3",
+        "width" : 640,
+        "height" : 480,
+        "fill" : "fill",
+        "fillColor" : {
+          "red" : 0,
+          "green" : 0,
+          "blue" : 0
+        }
+      },
+      "objects" : []
+    },
+    {
+      "background" : {
+        "image" : "photo4",
+        "width" : 640,
+        "height" : 427,
+        "fill" : "fill",
+        "fillColor" : {
+          "red" : 0,
+          "green" : 0,
+          "blue" : 0
+        }
+      },
+      "objects" : []
+    },
+    {
+      "background" : {
+        "image" : "photo5"
+      },
+      "objects" : []
+    },
+    {
+      "background" : {
+        "image" : "photo6"
+      },
+      "objects" : []
+    }
+  ]
+}
