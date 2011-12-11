@@ -2,12 +2,14 @@
 
 local M = {}
 
+local ioExt = require "io_ext"
+M.io = ioExt
+
+local stringExt = require "string_ext"
+M.string = stringExt
 
 local tableExt = require "table_ext"
 M.table = tableExt
-
-local ioExt = require "io_ext"
-M.io = ioExt
 
 local timeExt = require "time_ext"
 M.time = timeExt
