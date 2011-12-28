@@ -30,6 +30,13 @@ result = book.title
 doTest( result, expectedResult, "radlib.io.parseJson")
 
 ------------------------------------------------------------------------------
+-- orm tests
+------------------------------------------------------------------------------
+local orm = require "orm"
+local dbPath = system.pathForFile("data.db", system.DocumentsDirectory)
+orm.initialize( dbPath )
+
+------------------------------------------------------------------------------
 -- string_ext tests
 ------------------------------------------------------------------------------
 expectedResult = '"The quick brown fox"'

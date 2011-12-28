@@ -1,11 +1,16 @@
 local sqlite3 = require "sqlite3"
-
 local radlib = require "radlib"
 
-local path = system.pathForFile("data.db", system.DocumentsDirectory)
-local db = sqlite3.open( path )
 
 local M = {}
+
+------------------------------------------------------------------------------
+-- Initialize the database connection
+------------------------------------------------------------------------------
+local initialize = function( dbPath )
+  db = sqlite3.open( dbPath )
+end
+M.initialize = initialize
 
 ------------------------------------------------------------------------------
 -- Close the database
