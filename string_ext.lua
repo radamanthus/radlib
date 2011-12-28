@@ -1,17 +1,15 @@
 local M = {}
 M.string = {}
 
-local doublequote = function( str )
+local doubleQuote = function( str )
   return '"' .. str .. '"'
 end
-M.doublequote = doublequote
-M.doubleQuote = doublequote
+M.doubleQuote = doubleQuote
 
-local singlequote = function( str )
+local singleQuote = function( str )
   return "'" .. str .. "'"
 end
-M.singlequote = singlequote
-M.singleQuote = singlequote
+M.singleQuote = singleQuote
 
 local toSqlString = function( str )
   local result = string.gsub( str, "'", "'''")
