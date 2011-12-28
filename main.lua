@@ -9,7 +9,7 @@
 local radlib = require "radlib"
 require "Test.More"
 
-plan(14)
+plan(35)
 
 local testCount = 0
 local expectedResult = nil
@@ -33,18 +33,117 @@ doTest( result, expectedResult, "radlib.io.parseJson")
 -- orm tests
 ------------------------------------------------------------------------------
 local orm = require "orm"
-local dbPath = system.pathForFile("data.db", system.DocumentsDirectory)
-orm.initialize( dbPath )
+local db = orm.initialize( nil )
+db:exec(
+  [[
+    CREATE TABLE IF NOT EXISTS "users" (
+      "id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE ,
+      "username" CHAR NOT NULL ,
+      "email" CHAR NOT NULL
+    );
+    INSERT INTO users(id, username, email) VALUES(1, 'alice', 'alice@wonderland.com');
+    INSERT INTO users(id, username, email) VALUES(2, 'bob', 'bob@dabuilder.com');
+    INSERT INTO users(id, username, email) VALUES(3, 'charlie', 'charlie@chaplin.com');
+  ]])
+
+-- selectAll
+local users = orm.selectAll('users')
+doTest( #users, 3, 'orm.selectAll' )
+
+-- selectWhere
+local records = orm.selectWhere( 'users', 'id = 1' )
+doTest( records[1].username, 'alice', 'orm.selectWhere' )
+doTest( records[1].email, 'alice@wonderland.com', 'orm.selectWhere' )
+
+local records = orm.selectWhere( 'users', 'id > 1' )
+doTest( #records, 2, 'orm.selectWhere' )
+
+local aliceRecords = radlib.table.findAll( records,
+  function(record) return('alice' == record.username) end
+)
+doTest( #aliceRecords, 0, 'orm.selectWhere' )
+local bobRecords = radlib.table.findAll( records,
+  function(record) return('bob' == record.username) end
+)
+doTest( #bobRecords, 1, 'orm.selectWhere' )
+local charlieRecords = radlib.table.findAll( records,
+  function(record) return('charlie' == record.username) end
+)
+doTest( #charlieRecords, 1, 'orm.selectWhere' )
+
+-- selectOne
+local record = orm.selectOne( 'users', 'id', 2 )
+doTest( record.username, 'bob', 'orm.selectOne' )
+
+-- getTableRowCount
+doTest( 3, orm.getTableRowCount('users'), 'orm.getTableRowCount' )
+
+-- insertRow
+local row = {
+  id = 4,
+  username = 'dennis',
+  email = 'dennis@damenace.com'
+}
+orm.insertRow( 'users', row )
+doTest( 4, orm.getTableRowCount('users'), 'orm.insertRow' )
+local savedRecord = orm.selectOne( 'users', 'id', 4 )
+doTest( savedRecord.username, row.username, 'orm.insertRow' )
+doTest( savedRecord.email, row.email, 'orm.insertRow' )
+
+-- updateRow
+local row = {
+  id = 4,
+  username = 'newDennis'
+}
+orm.updateRow( 'users', row )
+local savedRecord = orm.selectOne( 'users', 'id', 4 )
+doTest( savedRecord.username, row.username, 'orm.updateRow' )
+
+-- createOrUpdate
+-- create
+local row = {
+  id = 5,
+  username = 'emo',
+  email = 'emo@tcl.com'
+}
+orm.createOrUpdate( 'users', row )
+doTest( 5, orm.getTableRowCount('users'), 'orm.createOrUpdate' )
+local savedRecord = orm.selectOne( 'users', 'id', 5 )
+doTest( savedRecord.username, row.username, 'orm.createOrUpdate' )
+doTest( savedRecord.email, row.email, 'orm.createOrUpdate' )
+-- then update
+row.username = 'emoUpdated'
+row.email = 'emonew@tcl.com'
+orm.createOrUpdate( 'users', row )
+local savedRecord = orm.selectOne( 'users', 'id', 5 )
+doTest( savedRecord.username, row.username, 'orm.createOrUpdate' )
+doTest( savedRecord.email, row.email, 'orm.createOrUpdate' )
+
+-- updateAttribute
+local newEmailAddress = 'bob@newaddress.com'
+orm.updateAttribute( 'users', 'id = 2', 'email', newEmailAddress )
+local updatedRecord = orm.selectOne( 'users', 'id', 2 )
+doTest( updatedRecord.email, newEmailAddress, 'orm.updateAttribute' )
+
+-- updateAttributes
+local newUsername = 'calvin'
+local newEmailAddress = 'calvin@hobbes.com'
+orm.updateAttributes( 'users', 'id = 3', {'username', 'email'}, {newUsername, newEmailAddress})
+local updatedRecord = orm.selectOne( 'users', 'id', 3 )
+doTest( updatedRecord.username, newUsername, 'orm.updateAttributes' )
+doTest( updatedRecord.email, newEmailAddress, 'orm.updateAttributes' )
+
+orm.close()
 
 ------------------------------------------------------------------------------
 -- string_ext tests
 ------------------------------------------------------------------------------
 expectedResult = '"The quick brown fox"'
-result = radlib.string.doublequote('The quick brown fox')
+result = radlib.string.doubleQuote('The quick brown fox')
 doTest( result, expectedResult, "radlib.string.doubleQuote" )
 
 expectedResult = "'The quick brown fox'"
-result = radlib.string.singlequote("The quick brown fox")
+result = radlib.string.singleQuote("The quick brown fox")
 doTest( result, expectedResult, "radlib.string.singleQuote")
 
 ------------------------------------------------------------------------------

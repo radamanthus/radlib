@@ -8,7 +8,12 @@ local M = {}
 -- Initialize the database connection
 ------------------------------------------------------------------------------
 local initialize = function( dbPath )
-  db = sqlite3.open( dbPath )
+  if dbPath ~= nil then
+    db = sqlite3.open( dbPath )
+  else
+    db = sqlite3.open_memory()
+  end
+  return db
 end
 M.initialize = initialize
 
@@ -38,7 +43,7 @@ M.selectAll = selectAll
 ------------------------------------------------------------------------------
 local selectWhere = function(tableName, whereClause)
   local result = {}
-  for row in db:nrows("SELECT * FROM " .. tableName .. " " .. whereClause) do
+  for row in db:nrows("SELECT * FROM " .. tableName .. " WHERE " .. whereClause) do
     result[#result+1] = row
   end
   return result
@@ -61,15 +66,6 @@ local selectOne = function(tableName, key, keyValue)
   return result[1]
 end
 M.selectOne = selectOne
-
-------------------------------------------------------------------------------
--- If a matching id already exists in the database, do an update
--- otherwise do an insert
-------------------------------------------------------------------------------
-local createOrUpdate = function( tableName, recordData )
-  M.insertRow( tableName, recordData )
-end
-M.createOrUpdate = createOrUpdate
 
 ------------------------------------------------------------------------------
 -- Returns the number of rows for the given table
@@ -117,9 +113,53 @@ end
 M.insertRow = insertRow
 
 ------------------------------------------------------------------------------
+-- Updates a row on the given table
+------------------------------------------------------------------------------
+local updateRow = function( tableName, recordData )
+  -- format column values into SQL-safe strings
+  -- then concatenate them together
+  local updateStr = ''
+  for i,v in pairs(recordData) do
+    if i ~= 'id' then
+      local colName = i
+      local colValue = v
+      if type(v) == 'string' then
+        colValue = radlib.string.toSqlString(v)
+      end
+      updateStr = updateStr .. colName .. " = " .. colValue .. ","
+    end
+  end
+
+  -- remove the trailing comma
+  updateStr = string.sub( updateStr, 1, #updateStr-1 )
+
+  local sql = "UPDATE " .. tableName .. " SET " .. updateStr .. " WHERE id = " .. recordData.id
+  print( "UPDATE SQL: " .. sql )
+  db:exec( sql )
+end
+M.updateRow = updateRow
+
+------------------------------------------------------------------------------
+-- If a matching id already exists in the database, do an update
+-- otherwise do an insert
+------------------------------------------------------------------------------
+local createOrUpdate = function( tableName, recordData )
+  local existingRecord = M.selectOne( tableName, 'id', recordData.id )
+  if existingRecord == nil then
+    M.insertRow( tableName, recordData )
+  else
+    M.updateRow( tableName, recordData )
+  end
+end
+M.createOrUpdate = createOrUpdate
+
+------------------------------------------------------------------------------
 -- Updates one column for one row in a given table
 ------------------------------------------------------------------------------
 local updateAttribute = function( tablename, filter, columnName, columnValue )
+  if type(columnValue) == 'string' then
+    columnValue = radlib.string.toSqlString( columnValue )
+  end
   local updateStr = "UPDATE " .. tablename ..
     " SET " .. columnName .. " = " .. columnValue ..
     " WHERE " .. filter
@@ -133,9 +173,14 @@ M.updateAttribute = updateAttribute
 ------------------------------------------------------------------------------
 local updateAttributes = function( tablename, filter, columns, columnValues )
   local updateStr = ''
-  radlib.table.print(object)
+  local newValue = nil
   for i,v in ipairs(columns) do
-    updateStr = v .. " = " .. columnValues[i]
+    if type(v) == 'string' then
+      newValue = radlib.string.toSqlString( columnValues[i] )
+    else
+      newValue = columnValues[i]
+    end
+    updateStr = updateStr .. v .. " = " .. newValue
     if i < #columns then
       updateStr = updateStr .. ", "
     end
