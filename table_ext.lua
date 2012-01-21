@@ -21,26 +21,6 @@ end
 M.merge = merge
 
 ------------------------------------------------------------------------------
--- Similar to Ruby's Enumerable#select
--- Given an input table and a function, return only those rows where fx(row) returns true
--- Example usage:
---
--- local audio_assets = radlib.table.findAll(book.assets,
---      function(object) return("sfx" == object.type) end
---    )
-------------------------------------------------------------------------------
-local findAll = function( t, fx )
-  local result = {}
-  for i,v in ipairs(t) do
-    if fx(v) then
-      result[#result + 1] = v
-    end
-  end
-  return result
-end
-M.findAll = findAll
-
-------------------------------------------------------------------------------
 -- Print the contents of a table
 ------------------------------------------------------------------------------
 local tablePrint = function( t )

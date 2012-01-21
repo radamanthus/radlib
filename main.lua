@@ -6,6 +6,7 @@
 -- The test results will be printed on the console
 --
 
+local _ = require "underscore"
 local radlib = require "radlib"
 require "Test.More"
 
@@ -58,15 +59,15 @@ doTest( records[1].email, 'alice@wonderland.com', 'orm.selectWhere' )
 local records = orm.selectWhere( 'users', 'id > 1' )
 doTest( #records, 2, 'orm.selectWhere' )
 
-local aliceRecords = radlib.table.findAll( records,
+local aliceRecords = _.select( records,
   function(record) return('alice' == record.username) end
 )
 doTest( #aliceRecords, 0, 'orm.selectWhere' )
-local bobRecords = radlib.table.findAll( records,
+local bobRecords = _.select( records,
   function(record) return('bob' == record.username) end
 )
 doTest( #bobRecords, 1, 'orm.selectWhere' )
-local charlieRecords = radlib.table.findAll( records,
+local charlieRecords = _.select( records,
   function(record) return('charlie' == record.username) end
 )
 doTest( #charlieRecords, 1, 'orm.selectWhere' )
@@ -165,25 +166,25 @@ local objects = {
   { name = "Walter", gender = "male", age = 30 }
 }
 
-local females = radlib.table.findAll( objects,
+local females = _.select( objects,
    function(object) return("female" == object.gender) end
 )
-doTest( #females, 2, "radlib.table.findAll" )
+doTest( #females, 2, "_.select" )
 
-local femalesOver30 = radlib.table.findAll( females,
+local femalesOver30 = _.select( females,
   function(object) return(object.age > 30) end
 )
-doTest( #femalesOver30, 1, "radlib.table.findAll" )
+doTest( #femalesOver30, 1, "_.select" )
 
-local males = radlib.table.findAll( objects,
+local males = _.select( objects,
   function(object) return("male" == object.gender) end
 )
-doTest( #males, 3, "radlib.table.findAll" )
+doTest( #males, 3, "_.select" )
 
-local aliens = radlib.table.findAll( objects,
+local aliens = _.select( objects,
   function(object) return("alien" == object.gender) end
 )
-doTest( #aliens, 1, "radlib.table.findAll" )
+doTest( #aliens, 1, "_.select" )
 
 ------------------------------------------------------------------------------
 -- time_ext tests
