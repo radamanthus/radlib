@@ -10,13 +10,19 @@ local _ = require "underscore"
 local radlib = require "radlib"
 require "Test.More"
 
-plan(35)
+plan(37)
 
 local testCount = 0
 local expectedResult = nil
 local result = nil
 
 function doTest( result, expectedResult, title )
+  if result == nil then
+    result = 'nil'
+  end
+  if expectedResult == nil then
+    expectedResult = 'nil'
+  end
   local msg = title .. " : " .. result .. " should be equal to " .. expectedResult
   is( result, expectedResult, msg )
   testCount = testCount + 1
@@ -33,8 +39,8 @@ doTest( result, expectedResult, "radlib.io.parseJson")
 ------------------------------------------------------------------------------
 -- orm tests
 ------------------------------------------------------------------------------
-local orm = require "orm"
-local db = orm.initialize( nil )
+orm = require "orm"
+db = orm.initialize( nil )
 db:exec(
   [[
     CREATE TABLE IF NOT EXISTS "users" (
@@ -133,6 +139,16 @@ orm.updateAttributes( 'users', 'id = 3', {'username', 'email'}, {newUsername, ne
 local updatedRecord = orm.selectOne( 'users', 'id', 3 )
 doTest( updatedRecord.username, newUsername, 'orm.updateAttributes' )
 doTest( updatedRecord.email, newEmailAddress, 'orm.updateAttributes' )
+
+
+------------------------------------------------------------------------------
+-- active_record tests
+------------------------------------------------------------------------------
+local Product = require 'product'
+doTest( 5, Product.count(), 'active_record.count' )
+
+local a = Product.find(3)
+doTest( a.email, 'calvin@hobbes.com', 'active_record.find' )
 
 orm.close()
 
