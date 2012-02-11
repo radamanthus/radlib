@@ -31,46 +31,29 @@
 -- orm.initialize()
 -- Product.createTable()
 
-local M = {}
+require 'middleclass'
+
+ActiveRecord = class('ActiveRecord')
+ActiveRecord.static.tableName = 'users'
 
 ------------------------------------------------------------------------------
 -- Returns the number of rows in the table
 ------------------------------------------------------------------------------
-local count = function()
-  return orm.getTableRowCount(M.tableName)
+function ActiveRecord.static:count()
+  return orm.getTableRowCount(self.tableName)
 end
-M.count = count
 
 ------------------------------------------------------------------------------
 -- Returns the record matching the given id. Returns nil if no match is found.
 ------------------------------------------------------------------------------
-local find = function(id)
-  return orm.selectOne(M.tableName, 'id', id)
+function ActiveRecord.static:find(id)
+  return orm.selectOne(self.tableName, 'id', id)
 end
-M.find = find
 
 ------------------------------------------------------------------------------
 -- Returns all rows in the table.
 ------------------------------------------------------------------------------
-local findAll = function()
-  return orm.selectAll(M.tableName)
+function ActiveRecord.static:findAll()
+  return orm.selectAll(self.tableName)
 end
-M.findAll = findAll
 
-------------------------------------------------------------------------------
--- Sets the database table name for this class
-------------------------------------------------------------------------------
-local setTableName = function(tableName)
-  M.tableName = tableName
-end
-M.setTableName = setTableName
-
-------------------------------------------------------------------------------
--- Sets the database table fields for this class
-------------------------------------------------------------------------------
-local setTableFields = function(tableFields)
-  M.tableFields = tableFields
-end
-M.setTableFields = setTableFields
-
-return M

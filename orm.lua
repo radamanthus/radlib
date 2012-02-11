@@ -56,10 +56,10 @@ M.selectWhere = selectWhere
 ------------------------------------------------------------------------------
 local selectOne = function(tableName, key, keyValue)
   local result = {}
-  for row in _G.db:nrows(
-		"SELECT * FROM " .. tableName ..
+  local sql = "SELECT * FROM " .. tableName ..
 		" WHERE " .. key .. " = " .. keyValue ..
-		" LIMIT 1") do
+		" LIMIT 1"
+  for row in _G.db:nrows(sql) do
     result[1] = row
     break
   end

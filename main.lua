@@ -144,10 +144,11 @@ doTest( updatedRecord.email, newEmailAddress, 'orm.updateAttributes' )
 ------------------------------------------------------------------------------
 -- active_record tests
 ------------------------------------------------------------------------------
-local Product = require 'product'
-doTest( 5, Product.count(), 'active_record.count' )
+require 'user'
 
-local a = Product.find(3)
+doTest( 5, User.static:count(), 'active_record.count' )
+
+local a = User.static:find(3)
 doTest( a.email, 'calvin@hobbes.com', 'active_record.find' )
 
 orm.close()
