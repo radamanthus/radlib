@@ -1,35 +1,35 @@
+-- USAGE
 --
--- local products = Product.findAll
+-- Create a Lua file for your module. The file should look like this:
 --
--- p = Product.new{id = 1, name = 'test', description = ''}
+-- require 'ActiveRecord'
+-- Product = ActiveRecord:subclass('ActiveRecord')
+-- Product.tableName = 'products'
+-- Product.tableFields = {
+--  id = {type = 'integer', flags = {'primary_key', 'autoincrement', 'not_null'} },
+--  name = {type = 'string', flags = {'not_null'} }
+-- }
+--
+-- If the table does not yet exist, you can create it in your app initialization with this call:
+--
+-- orm.initialize()
+-- Product.createTable()
+--
+-- Sample API calls
+--
+-- local products = Product.findAll (NOT YET IMPLEMENTED)
+--
+-- p = Product.new{id = 1, name = 'test', description = ''} (NOT YET IMPLEMENTED)
 -- p.save
 --
 -- p.updateAttribute('name', 'newName')
--- p.updateAttributes{name = 'newName', description = 'newDescription'}
---
+-- p.updateAttributes{name = 'newName', description = 'newDescription'} (NOT YET IMPLEMENTED)
 --
 -- p = Product.find(1)
 -- test_products = Product.where("name = 'test'")
 --
 -- numberOfProducts = Product.count()
 --
---
--- USAGE
---
--- Create a Lua file for your module. The file should look like this:
---
--- local Product = require 'active_record'
--- Product.setTableName('products')
--- Product.setTableFields({
---  id = {type = 'integer', flags = {'primary_key', 'autoincrement', 'not_null'} },
---  name = {type = 'string', flags = {'not_null'} }
--- })
--- return Product
---
--- If the table does not yet exist, you can create it in your app initialization with this call:
---
--- orm.initialize()
--- Product.createTable()
 
 require 'middleclass'
 
