@@ -17,7 +17,7 @@
 --
 -- Sample API calls
 --
--- local products = Product.findAll (NOT YET IMPLEMENTED)
+-- local products = Product.findAll
 --
 -- p = Product.new{id = 1, name = 'test', description = ''} (NOT YET IMPLEMENTED)
 -- p.save
@@ -31,10 +31,21 @@
 -- numberOfProducts = Product.count()
 --
 
+local radlib = require 'radlib'
+
 require 'middleclass'
 
 ActiveRecord = class('ActiveRecord')
-ActiveRecord.static.tableName = 'users'
+
+------------------------------------------------------------------------------
+-- CLASS (STATIC) METHODS - START
+------------------------------------------------------------------------------
+
+function ActiveRecord:initialize(newRecord)
+  for k in pairs(self.tableFields) do
+    self.k = newRecord.k
+  end
+end
 
 ------------------------------------------------------------------------------
 -- Returns the number of rows in the table
@@ -47,7 +58,11 @@ end
 -- Returns the record matching the given id. Returns nil if no match is found.
 ------------------------------------------------------------------------------
 function ActiveRecord.static:find(id)
-  return orm.selectOne(self.tableName, 'id', id)
+  local record = orm.selectOne(self.tableName, 'id', id)
+  --setmetatable( record, ActiveRecord )
+  --return record
+  local result = ActiveRecord:new(record)
+  return result
 end
 
 ------------------------------------------------------------------------------
@@ -56,4 +71,29 @@ end
 function ActiveRecord.static:findAll()
   return orm.selectAll(self.tableName)
 end
+
+------------------------------------------------------------------------------
+-- CLASS (STATIC) METHODS - END
+------------------------------------------------------------------------------
+
+
+
+
+------------------------------------------------------------------------------
+-- INSTANCE METHODS - START
+------------------------------------------------------------------------------
+
+------------------------------------------------------------------------------
+-- Updates one column value
+------------------------------------------------------------------------------
+function ActiveRecord:updateAttribute( columnName, columnValue )
+  local filter = "id = " .. self.id
+  orm.updateAttribute( self.tableName, filter, columnName, columnValue )
+end
+
+------------------------------------------------------------------------------
+-- INSTANCE METHODS - END
+------------------------------------------------------------------------------
+
+
 

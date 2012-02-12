@@ -59,6 +59,7 @@ local selectOne = function(tableName, key, keyValue)
   local sql = "SELECT * FROM " .. tableName ..
 		" WHERE " .. key .. " = " .. keyValue ..
 		" LIMIT 1"
+  print("SQL: " .. sql)
   for row in _G.db:nrows(sql) do
     result[1] = row
     break
