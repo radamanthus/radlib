@@ -19,9 +19,18 @@ function ActiveRecord.static:getCount()
   print("SELECT COUNT(*) FROM " .. self.tableName)
 end
 
+function ActiveRecord.static:find(klass, id)
+  --local record = orm.selectOne(self.tableName, 'id', id)
+  local record = {id = id, name = 'rabbit'}
+  local result = klass:new(record)
+  return result
+end
+
 function ActiveRecord:printName(params)
   print("Name: " .. self.name)
 end
+
+
 
 User = class('User', ActiveRecord)
 User.static.tableName = 'users'
@@ -45,3 +54,8 @@ local u = User:new({id = 1, name = 'rabbit'})
 print("id: " .. u.id)
 print("name: " .. u.name)
 u:printName()
+
+u1 = User.static:find(User, 1)
+print("CLASS OF u1: " .. u1.class.name)
+a1 = Animal.static:find(Animal, 1)
+print("CLASS OF a1: " .. a1.class.name)

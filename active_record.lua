@@ -56,12 +56,13 @@ end
 
 ------------------------------------------------------------------------------
 -- Returns the record matching the given id. Returns nil if no match is found.
+--
+-- NOTE: Until I figure out how to determine the caller's class,
+-- I'll have to resort to this ugliness of using the klass parameter
 ------------------------------------------------------------------------------
-function ActiveRecord.static:find(id)
+function ActiveRecord.static:find(klass, id)
   local record = orm.selectOne(self.tableName, 'id', id)
-  --setmetatable( record, ActiveRecord )
-  --return record
-  local result = ActiveRecord:new(record)
+  local result = klass:new(record)
   return result
 end
 
