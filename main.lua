@@ -10,7 +10,7 @@ local _ = require "underscore"
 local radlib = require "radlib"
 require "Test.More"
 
-plan(38)
+plan(39)
 
 local testCount = 0
 local expectedResult = nil
@@ -148,12 +148,16 @@ require 'user'
 
 doTest( 5, User.static:count(), 'ActiveRecord:count' )
 
-local a = User.static:find(3)
+local a = User.static:find(User, 3)
 doTest( a.email, 'calvin@hobbes.com', 'ActiveRecord:find' )
 
-newEmail = 'newcalvinemail@hobbes.com'
-a:updateAttribute( 'email', newEmail )
-doTest( a.email, newEmail, 'ActiveRecord:updateAttribute' )
+local updatedEmail = 'newcalvinemail@hobbes.com'
+a:updateAttribute( 'email', updatedEmail )
+local a2 = User.static:find(User, 3)
+doTest( a2.email, updatedEmail, 'ActiveRecord:updateAttribute' )
+
+a:reload()
+doTest( a.email, updatedEmail, 'ActiveRecord:reload')
 
 orm.close()
 

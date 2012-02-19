@@ -31,8 +31,6 @@
 -- numberOfProducts = Product.count()
 --
 
-local radlib = require 'radlib'
-
 require 'middleclass'
 
 ActiveRecord = class('ActiveRecord')
@@ -40,10 +38,9 @@ ActiveRecord = class('ActiveRecord')
 ------------------------------------------------------------------------------
 -- CLASS (STATIC) METHODS - START
 ------------------------------------------------------------------------------
-
 function ActiveRecord:initialize(newRecord)
-  for k in pairs(self.tableFields) do
-    self.k = newRecord.k
+  for k,v in pairs(newRecord) do
+    self[k] = v
   end
 end
 
@@ -61,8 +58,10 @@ end
 -- I'll have to resort to this ugliness of using the klass parameter
 ------------------------------------------------------------------------------
 function ActiveRecord.static:find(klass, id)
-  local record = orm.selectOne(self.tableName, 'id', id)
-  local result = klass:new(record)
+  local record = orm.selectOne(klass.tableName, 'id', id)
+  if not( record == nil ) then
+    result = klass:new(record)
+  end
   return result
 end
 
@@ -78,18 +77,42 @@ end
 ------------------------------------------------------------------------------
 
 
-
-
 ------------------------------------------------------------------------------
 -- INSTANCE METHODS - START
 ------------------------------------------------------------------------------
+
+------------------------------------------------------------------------------
+-- Reloads the record values from the database
+------------------------------------------------------------------------------
+function ActiveRecord:reload()
+  local updatedRecord = orm.selectOne( self.class.tableName, 'id', self.id )
+  for k,v in pairs(updatedRecord) do
+    self[k] = v
+  end
+end
+
+------------------------------------------------------------------------------
+-- Saves the content of the object to the database.
+-- If a matching record already exists in the database, an UPDATE is done.
+-- Otherwise an INSERT is done.
+------------------------------------------------------------------------------
+function ActiveRecord:save()
+  print("IMPLEMENTATION PENDING...")
+end
 
 ------------------------------------------------------------------------------
 -- Updates one column value
 ------------------------------------------------------------------------------
 function ActiveRecord:updateAttribute( columnName, columnValue )
   local filter = "id = " .. self.id
-  orm.updateAttribute( self.tableName, filter, columnName, columnValue )
+  orm.updateAttribute( self.class.tableName, filter, columnName, columnValue )
+end
+
+------------------------------------------------------------------------------
+-- Updates an array of columns
+------------------------------------------------------------------------------
+function ActiveRecord:updateAttributes( updateTable )
+  print("IMPLEMENTATION PENDING...")
 end
 
 ------------------------------------------------------------------------------

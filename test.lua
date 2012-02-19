@@ -36,10 +36,10 @@ User = class('User', ActiveRecord)
 User.static.tableName = 'users'
 function User:initialize(u)
   for k,v in pairs(u) do
-    self.k = v
+    self[k] = v
   end
-  self.id = u.id
-  self.name = u.name
+  --self.id = u.id
+  --self.name = u.name
 end
 
 Animal = class('Animal', ActiveRecord)

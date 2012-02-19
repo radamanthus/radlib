@@ -59,7 +59,6 @@ local selectOne = function(tableName, key, keyValue)
   local sql = "SELECT * FROM " .. tableName ..
 		" WHERE " .. key .. " = " .. keyValue ..
 		" LIMIT 1"
-  print("SQL: " .. sql)
   for row in _G.db:nrows(sql) do
     result[1] = row
     break
@@ -108,7 +107,6 @@ local insertRow = function( tableName, row )
   local sql = "INSERT INTO " .. tableName .. columnList .. valuesList
 
   -- execute the SQL command for inserting the row
-  print("Running INSERT SQL: " .. sql)
   _G.db:exec( sql )
 end
 M.insertRow = insertRow
@@ -135,7 +133,6 @@ local updateRow = function( tableName, recordData )
   updateStr = string.sub( updateStr, 1, #updateStr-1 )
 
   local sql = "UPDATE " .. tableName .. " SET " .. updateStr .. " WHERE id = " .. recordData.id
-  print( "UPDATE SQL: " .. sql )
   db:exec( sql )
 end
 M.updateRow = updateRow
@@ -164,7 +161,6 @@ local updateAttribute = function( tablename, filter, columnName, columnValue )
   local updateStr = "UPDATE " .. tablename ..
     " SET " .. columnName .. " = " .. columnValue ..
     " WHERE " .. filter
-  print("UPDATE SQL: " .. updateStr )
   db:exec( updateStr )
 end
 M.updateAttribute = updateAttribute
@@ -186,7 +182,6 @@ local updateAttributes = function( tablename, filter, columns, columnValues )
       updateStr = updateStr .. ", "
     end
   end
-  print("UPDATE SQL: " .. updateStr)
   db:exec(
     "UPDATE " .. tablename .. " SET " ..
     updateStr ..
