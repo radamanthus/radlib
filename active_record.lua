@@ -144,7 +144,14 @@ end
 -- Updates an array of columns
 ------------------------------------------------------------------------------
 function ActiveRecord:updateAttributes( updateTable )
-  print("IMPLEMENTATION PENDING...")
+  local filter = "id = " .. self.id
+  local columns = {}
+  local columnValues = {}
+  for k,v in pairs(updateTable) do
+    table.insert( columns, k )
+    table.insert( columnValues, v )
+  end
+  orm.updateAttributes( self.class.tableName, filter, columns, columnValues )
 end
 
 ------------------------------------------------------------------------------
