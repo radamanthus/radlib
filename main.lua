@@ -10,7 +10,7 @@ local _ = require "underscore"
 local radlib = require "radlib"
 require "Test.More"
 
-plan(39)
+plan(40)
 
 local testCount = 0
 local expectedResult = nil
@@ -23,7 +23,7 @@ function doTest( result, expectedResult, title )
   if expectedResult == nil then
     expectedResult = 'nil'
   end
-  local msg = title .. " : " .. result .. " should be equal to " .. expectedResult
+  local msg = title .. " : " .. tostring(result) .. " should be equal to " .. tostring(expectedResult)
   is( result, expectedResult, msg )
   testCount = testCount + 1
 end
@@ -140,6 +140,30 @@ local updatedRecord = orm.selectOne( 'users', 'id', 3 )
 doTest( updatedRecord.username, newUsername, 'orm.updateAttributes' )
 doTest( updatedRecord.email, newEmailAddress, 'orm.updateAttributes' )
 
+------------------------------------------------------------------------------
+-- sql tests
+------------------------------------------------------------------------------
+local sql = require 'sql'
+
+local tableName = 'users'
+local tableFields = {
+  id = {
+    dataType = 'integer',
+    flags = {'not null', 'primary key', 'autoincrement'}
+  },
+  username = {
+    dataType = 'char', flags = {'not null', 'unique'}
+  },
+  email = {
+    dataType = 'char', flags = {'not null', 'unique'}
+  }
+}
+local createSql = sql.generateCreateTable( tableName, tableFields )
+doTest(
+  string.find(createSql, 'CREATE TABLE IF NOT EXISTS ' .. tableName) ~= nil,
+  true,
+  'sql.generateCreateTable'
+)
 
 ------------------------------------------------------------------------------
 -- active_record tests

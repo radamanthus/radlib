@@ -32,6 +32,8 @@
 --
 
 require 'middleclass'
+local orm = require 'orm'
+local sql = require 'sql'
 
 ActiveRecord = class('ActiveRecord')
 
@@ -49,6 +51,15 @@ end
 ------------------------------------------------------------------------------
 function ActiveRecord.static:count()
   return orm.getTableRowCount(self.tableName)
+end
+
+------------------------------------------------------------------------------
+-- Creates the table
+-- TODO: If options.recreate = true, it drops the table if it already exists
+------------------------------------------------------------------------------
+function ActiveRecord.static:createTable(options)
+  local createSql = sql.generateCreateTable(self.tableName, self.tableFields)
+  db:exec( createSql )
 end
 
 ------------------------------------------------------------------------------
