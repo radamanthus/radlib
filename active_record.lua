@@ -108,7 +108,11 @@ end
 -- Otherwise an INSERT is done.
 ------------------------------------------------------------------------------
 function ActiveRecord:save()
-  print("IMPLEMENTATION PENDING...")
+  local updateTable = {}
+  for k in pairs(self.class.tableFields) do
+    updateTable[k] = self[k]
+  end
+  orm.createOrUpdate( self.class.tableName, updateTable )
 end
 
 ------------------------------------------------------------------------------

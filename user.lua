@@ -5,8 +5,9 @@ User = class('User', ActiveRecord)
 User.static.tableName = 'users'
 User.static.tableFields = {
   id = {
-    type = 'integer',
+    dataType = 'integer',
     flags = {'primary_key', 'autoincrement', 'not_null'}
   },
-  name = {type = 'string', flags = {'not_null'}}
+  name = {dataType = 'string', flags = {'not_null'}},
+  email = {dataType = 'string', flags = {}}
 }
