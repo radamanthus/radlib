@@ -10,7 +10,7 @@ local _ = require "underscore"
 local radlib = require "radlib"
 require "Test.More"
 
-plan(41)
+plan(43)
 
 local testCount = 0
 local expectedResult = nil
@@ -170,25 +170,42 @@ doTest(
 ------------------------------------------------------------------------------
 require 'user'
 
-doTest( 5, User.static:count(), 'ActiveRecord:count' )
+-- ActiveRecord.static:count
+doTest( 5, User.static:count(), 'ActiveRecord.static:count' )
 
-a = User.static:find(User, 3)
-doTest( a.email, 'calvin@hobbes.com', 'ActiveRecord:find' )
+-- ActiveRecord.static:find
+local a = User.static:find(User, 3)
+doTest( a.email, 'calvin@hobbes.com', 'ActiveRecord.static:find' )
 
+-- ActiveRecord.static:findAll with no filter
+local allUsers = User.static:findAll( nil )
+doTest( #allUsers, 5, 'ActiveRecord.static:findAll(nil)' )
+
+-- ActiveRecord.static:findAll with filter
+local filteredUsers = User.static:findAll( 'id > 3')
+doTest( #filteredUsers, 2, 'ActiveRecord.static:findAll(<filter>)' )
+
+-- ActiveRecord.static:updateAttribute
 local updatedEmail = 'newcalvinemail@hobbes.com'
 a:updateAttribute( 'email', updatedEmail )
 local a2 = User.static:find(User, 3)
-doTest( a2.email, updatedEmail, 'ActiveRecord:updateAttribute' )
+doTest( a2.email, updatedEmail, 'ActiveRecord.static:updateAttribute' )
 
+-- ActiveRecord:reload()
 a:reload()
 doTest( a.email, updatedEmail, 'ActiveRecord:reload')
 
+-- ActiveRecord:save()
 local newEmail = 'reallylatestemail@asdf.com'
 a = User.static:find(User, 3)
 a.email = newEmail
 a:save()
 a:reload()
 doTest( a.email, newEmail, 'ActiveRecord:save' )
+
+
+
+
 orm.close()
 
 ------------------------------------------------------------------------------

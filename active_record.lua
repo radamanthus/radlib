@@ -77,10 +77,16 @@ function ActiveRecord.static:find(klass, id)
 end
 
 ------------------------------------------------------------------------------
--- Returns all rows in the table.
+-- Returns all rows in the table that match the given filter
 ------------------------------------------------------------------------------
-function ActiveRecord.static:findAll()
-  return orm.selectAll(self.tableName)
+function ActiveRecord.static:findAll( filter )
+  local result = nil
+  if filter == nil then
+    result = orm.selectAll( self.tableName )
+  else
+    result = orm.selectWhere( self.tableName, filter )
+  end
+  return result
 end
 
 ------------------------------------------------------------------------------
