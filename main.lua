@@ -10,7 +10,7 @@ local _ = require "underscore"
 local radlib = require "radlib"
 require "Test.More"
 
-plan(43)
+plan(45)
 
 local testCount = 0
 local expectedResult = nil
@@ -96,6 +96,16 @@ doTest( 4, orm.getTableRowCount('users'), 'orm.insertRow' )
 local savedRecord = orm.selectOne( 'users', 'id', 4 )
 doTest( savedRecord.username, row.username, 'orm.insertRow' )
 doTest( savedRecord.email, row.email, 'orm.insertRow' )
+
+-- updateAll
+orm.updateAll( 'users', 'id = id + 100' )
+local usersWithUpdatedIDs = orm.selectWhere( 'users', "id > 100" )
+doTest( #usersWithUpdatedIDs, 4, 'orm.updateAll' )
+
+-- updateWhere
+orm.updateWhere( 'users', 'id = id - 100', 'id > 100' )
+usersWithUpdatedIDs = orm.selectWhere( 'users', 'id < 100' )
+doTest( #usersWithUpdatedIDs, 4, 'orm.updateWhere' )
 
 -- updateRow
 local row = {

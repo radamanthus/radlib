@@ -90,6 +90,17 @@ function ActiveRecord.static:findAll( filter )
 end
 
 ------------------------------------------------------------------------------
+-- Updates all rows in the table that match the given filter
+------------------------------------------------------------------------------
+function ActiveRecord.static:updateAll( updateSql, filter )
+  if filter == nil then
+    orm.updateAll( self.tableName, updateSql )
+  else
+    orm.updateWhere( self.tableName, updateSql, filter )
+  end
+end
+
+------------------------------------------------------------------------------
 -- CLASS (STATIC) METHODS - END
 ------------------------------------------------------------------------------
 

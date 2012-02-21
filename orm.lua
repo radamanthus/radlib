@@ -152,6 +152,16 @@ end
 M.createOrUpdate = createOrUpdate
 
 ------------------------------------------------------------------------------
+-- Updates all rows in the given table
+------------------------------------------------------------------------------
+local updateAll = function( tablename, updateSql )
+  local str = "UPDATE " .. tablename ..
+    " SET " .. updateSql
+  db:exec( str )
+end
+M.updateAll = updateAll
+
+------------------------------------------------------------------------------
 -- Updates one column for one row in a given table
 ------------------------------------------------------------------------------
 local updateAttribute = function( tablename, filter, columnName, columnValue )
@@ -189,6 +199,18 @@ local updateAttributes = function( tablename, filter, columns, columnValues )
   )
 end
 M.updateAttributes = updateAttributes
+
+------------------------------------------------------------------------------
+-- Updates all rows that match the filter in the given table
+------------------------------------------------------------------------------
+local updateWhere = function( tablename, updateSql, filter )
+  local str = "UPDATE " .. tablename ..
+    " SET " .. updateSql ..
+    " WHERE " .. filter
+  db:exec( str )
+end
+M.updateWhere = updateWhere
+
 
 return M
 
