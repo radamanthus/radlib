@@ -82,9 +82,9 @@ end
 function ActiveRecord.static:findAll( filter, orderBy )
   local result = nil
   if filter == nil then
-    result = orm.selectAll( self.tableName, orderBy )
+    result = orm.selectAll( self.tableName, {order = orderBy} )
   else
-    result = orm.selectWhere( self.tableName, filter, orderBy )
+    result = orm.selectWhere( self.tableName, {where = filter, order = orderBy} )
   end
   return result
 end

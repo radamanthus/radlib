@@ -1,3 +1,4 @@
+local sql = require 'sql'
 local sqlite3 = require "sqlite3"
 local radlib = require "radlib"
 
@@ -28,14 +29,14 @@ M.close = close
 ------------------------------------------------------------------------------
 -- Return all the contents of an SQLite table as a table structure
 ------------------------------------------------------------------------------
-local selectAll = function( tableName, orderBy )
+local selectAll = function( tableName, params )
   local result = {}
-  local orderSql = ''
-  if orderBy ~= nil then
-    orderSql = ' ORDER BY ' .. orderBy
-  end
-  local sql = "SELECT * FROM " .. tableName .. orderSql
-  for row in _G.db:nrows(sql) do
+  local s = sql.generateSelect({
+    tableName = tableName,
+    order = params.order,
+    limit = params.limit
+  })
+  for row in _G.db:nrows(s) do
     result[#result+1] = row
   end
   return result
@@ -45,17 +46,16 @@ M.selectAll = selectAll
 ------------------------------------------------------------------------------
 -- Return contents of an SQLite table filtered by a WHERE query
 -- Return value is a table structure
---
--- TODO: DRY up this code with common code from selectAll
 ------------------------------------------------------------------------------
-local selectWhere = function(tableName, whereClause, orderBy )
+local selectWhere = function(tableName, params )
   local result = {}
-  local orderSql = ''
-  if orderBy ~= nil then
-    orderSql = ' ORDER BY ' .. orderBy
-  end
-  local sql = "SELECT * FROM " .. tableName .. " WHERE " .. whereClause .. orderSql
-  for row in _G.db:nrows(sql) do
+  local s = sql.generateSelect({
+    tableName = tableName,
+    where = params.where,
+    order = params.order,
+    limit = params.limit
+  })
+  for row in _G.db:nrows(s) do
     result[#result+1] = row
   end
   return result
@@ -68,10 +68,12 @@ M.selectWhere = selectWhere
 ------------------------------------------------------------------------------
 local selectOne = function(tableName, key, keyValue)
   local result = {}
-  local sql = "SELECT * FROM " .. tableName ..
-		" WHERE " .. key .. " = " .. keyValue ..
-		" LIMIT 1"
-  for row in _G.db:nrows(sql) do
+  local s = sql.generateSelect({
+    tableName = tableName,
+    where = key .. " = " .. keyValue,
+    limit = 1
+  })
+  for row in _G.db:nrows(s) do
     result[1] = row
     break
   end

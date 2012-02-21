@@ -54,21 +54,21 @@ db:exec(
   ]])
 
 -- selectAll
-local users = orm.selectAll('users', nil)
+local users = orm.selectAll('users', {})
 doTest( #users, 3, 'orm.selectAll with orderBy = nil' )
 
-local orderedUsers = orm.selectAll( 'users', 'username DESC' )
+local orderedUsers = orm.selectAll( 'users', {order = 'username DESC'} )
 doTest( orderedUsers[1].username, 'charlie', 'orm.selectAll with orderBy' )
 
 -- selectWhere
-local records = orm.selectWhere( 'users', 'id = 1', nil )
+local records = orm.selectWhere( 'users', {where = 'id = 1'} )
 doTest( records[1].username, 'alice', 'orm.selectWhere' )
 doTest( records[1].email, 'alice@wonderland.com', 'orm.selectWhere with orderBy = nil' )
 
-local orderedUsers = orm.selectWhere( 'users', 'id > 1', 'username' )
+local orderedUsers = orm.selectWhere( 'users', {where = 'id > 1', order = 'username'} )
 doTest( orderedUsers[1].username, 'bob', 'orm.selectWhere with orderBy' )
 
-local records = orm.selectWhere( 'users', 'id > 1' )
+local records = orm.selectWhere( 'users', {where = 'id > 1'} )
 doTest( #records, 2, 'orm.selectWhere' )
 
 local aliceRecords = _.select( records,
