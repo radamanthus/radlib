@@ -22,7 +22,6 @@ M.sqlForFieldFlags = sqlForFieldFlags
 -- for the given tablename and tablefield definitions
 ------------------------------------------------------------------------------
 local generateCreateTable = function(tableName, tableFields)
-  print("Creating " .. tableName)
   local result = ''
   result = 'CREATE TABLE IF NOT EXISTS ' .. tableName .. '('
   for fieldName,fieldDef in pairs(tableFields) do
@@ -35,5 +34,46 @@ local generateCreateTable = function(tableName, tableFields)
   return result
 end
 M.generateCreateTable = generateCreateTable
+
+------------------------------------------------------------------------------
+-- Generate a SELECT statement
+--
+-- Parameters:
+--   tableName
+--   columns
+--   where
+--   order
+--   limit
+------------------------------------------------------------------------------
+local generateSelect = function(params)
+  local tableName = ''
+  if params.tableName == nil or params.tableName == '' then
+    return ''
+  else
+    tableName = params.tableName
+  end
+
+  local columns = ''
+  if params.columns == nil or params.columns == '' then
+    columns = '*'
+  else
+    columns = params.columns
+  end
+
+  local result = ''
+  result = 'SELECT ' .. columns .. ' FROM ' .. tableName
+  if params.where ~= nil and params.where ~= '' then
+    result = result .. ' WHERE ' .. params.where
+  end
+  if params.order ~= nil and params.order ~= '' then
+    result = result .. ' ORDER BY ' .. params.order
+  end
+  if params.limit ~= nil and params.limit ~= '' then
+    result = result .. ' LIMIT ' .. params.limit
+  end
+  return result
+end
+M.generateSelect = generateSelect
+
 
 return M

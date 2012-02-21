@@ -10,7 +10,7 @@ local _ = require "underscore"
 local radlib = require "radlib"
 require "Test.More"
 
-plan(47)
+plan(52)
 
 local testCount = 0
 local expectedResult = nil
@@ -161,6 +161,7 @@ doTest( updatedRecord.email, newEmailAddress, 'orm.updateAttributes' )
 ------------------------------------------------------------------------------
 local sql = require 'sql'
 
+-- sql.generateCreateTable
 local tableName = 'users'
 local tableFields = {
   id = {
@@ -180,6 +181,39 @@ doTest(
   true,
   'sql.generateCreateTable'
 )
+
+-- sql.generateSelect
+local s = nil
+
+s = sql.generateSelect({
+  tableName = 'users'
+})
+doTest( s, 'SELECT * FROM users', 'sql.generateSelect - only tableName param')
+
+s = sql.generateSelect({
+  tableName = 'users',
+  columns = 'id, email'
+})
+doTest( s, 'SELECT id, email FROM users', 'sql.generateSelect with columns param')
+
+s = sql.generateSelect({
+  tableName = 'users',
+  columns = 'id, email',
+  where = 'id > 100'
+})
+doTest( s, 'SELECT id, email FROM users WHERE id > 100', 'sql.generateSelect with columns and where param')
+
+s = sql.generateSelect({
+  tableName = 'users',
+  order = 'id DESC'
+})
+doTest( s, 'SELECT * FROM users ORDER BY id DESC', 'sql.generateSelect with order param')
+
+s = sql.generateSelect({
+  tableName = 'users',
+  limit = 1
+})
+doTest( s, 'SELECT * FROM users LIMIT 1', 'sql.generateSelect with limit param')
 
 ------------------------------------------------------------------------------
 -- active_record tests
