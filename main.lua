@@ -10,7 +10,7 @@ local _ = require "underscore"
 local radlib = require "radlib"
 require "Test.More"
 
-plan(45)
+plan(47)
 
 local testCount = 0
 local expectedResult = nil
@@ -54,13 +54,19 @@ db:exec(
   ]])
 
 -- selectAll
-local users = orm.selectAll('users')
-doTest( #users, 3, 'orm.selectAll' )
+local users = orm.selectAll('users', nil)
+doTest( #users, 3, 'orm.selectAll with orderBy = nil' )
+
+local orderedUsers = orm.selectAll( 'users', 'username DESC' )
+doTest( orderedUsers[1].username, 'charlie', 'orm.selectAll with orderBy' )
 
 -- selectWhere
-local records = orm.selectWhere( 'users', 'id = 1' )
+local records = orm.selectWhere( 'users', 'id = 1', nil )
 doTest( records[1].username, 'alice', 'orm.selectWhere' )
-doTest( records[1].email, 'alice@wonderland.com', 'orm.selectWhere' )
+doTest( records[1].email, 'alice@wonderland.com', 'orm.selectWhere with orderBy = nil' )
+
+local orderedUsers = orm.selectWhere( 'users', 'id > 1', 'username' )
+doTest( orderedUsers[1].username, 'bob', 'orm.selectWhere with orderBy' )
 
 local records = orm.selectWhere( 'users', 'id > 1' )
 doTest( #records, 2, 'orm.selectWhere' )

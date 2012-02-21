@@ -28,9 +28,14 @@ M.close = close
 ------------------------------------------------------------------------------
 -- Return all the contents of an SQLite table as a table structure
 ------------------------------------------------------------------------------
-local selectAll = function(tableName)
+local selectAll = function( tableName, orderBy )
   local result = {}
-  for row in _G.db:nrows("SELECT * FROM " .. tableName) do
+  local orderSql = ''
+  if orderBy ~= nil then
+    orderSql = ' ORDER BY ' .. orderBy
+  end
+  local sql = "SELECT * FROM " .. tableName .. orderSql
+  for row in _G.db:nrows(sql) do
     result[#result+1] = row
   end
   return result
@@ -40,10 +45,17 @@ M.selectAll = selectAll
 ------------------------------------------------------------------------------
 -- Return contents of an SQLite table filtered by a WHERE query
 -- Return value is a table structure
+--
+-- TODO: DRY up this code with common code from selectAll
 ------------------------------------------------------------------------------
-local selectWhere = function(tableName, whereClause)
+local selectWhere = function(tableName, whereClause, orderBy )
   local result = {}
-  for row in _G.db:nrows("SELECT * FROM " .. tableName .. " WHERE " .. whereClause) do
+  local orderSql = ''
+  if orderBy ~= nil then
+    orderSql = ' ORDER BY ' .. orderBy
+  end
+  local sql = "SELECT * FROM " .. tableName .. " WHERE " .. whereClause .. orderSql
+  for row in _G.db:nrows(sql) do
     result[#result+1] = row
   end
   return result
