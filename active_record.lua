@@ -79,12 +79,12 @@ end
 ------------------------------------------------------------------------------
 -- Returns all rows in the table that match the given filter
 ------------------------------------------------------------------------------
-function ActiveRecord.static:findAll( filter, orderBy )
+function ActiveRecord.static:findAll( klass, filter, orderBy )
   local result = nil
   if filter == nil then
-    result = orm.selectAll( self.tableName, {order = orderBy} )
+    result = orm.selectAll( klass.tableName, {order = orderBy} )
   else
-    result = orm.selectWhere( self.tableName, {where = filter, order = orderBy} )
+    result = orm.selectWhere( klass.tableName, {where = filter, order = orderBy} )
   end
   return result
 end
@@ -92,11 +92,11 @@ end
 ------------------------------------------------------------------------------
 -- Updates all rows in the table that match the given filter
 ------------------------------------------------------------------------------
-function ActiveRecord.static:updateAll( updateSql, filter )
+function ActiveRecord.static:updateAll( klass, updateSql, filter )
   if filter == nil then
-    orm.updateAll( self.tableName, updateSql )
+    orm.updateAll( klass.tableName, updateSql )
   else
-    orm.updateWhere( self.tableName, updateSql, filter )
+    orm.updateWhere( klass.tableName, updateSql, filter )
   end
 end
 
