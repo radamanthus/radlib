@@ -114,8 +114,10 @@ end
 ------------------------------------------------------------------------------
 function ActiveRecord:reload()
   local updatedRecord = orm.selectOne( self.class.tableName, 'id', self.id )
-  for k,v in pairs(updatedRecord) do
-    self[k] = v
+  if updatedRecord ~= nil then
+    for k,v in pairs(updatedRecord) do
+      self[k] = v
+    end
   end
 end
 

@@ -10,7 +10,7 @@ local _ = require "underscore"
 local radlib = require "radlib"
 require "Test.More"
 
-plan(52)
+plan(53)
 
 local testCount = 0
 local expectedResult = nil
@@ -251,7 +251,15 @@ a = User.static:find(User, 3)
 a.email = newEmail
 a:save()
 a:reload()
-doTest( a.email, newEmail, 'ActiveRecord:save' )
+doTest( a.email, newEmail, 'ActiveRecord:save - update an existing record' )
+
+local c = User:new({})
+local expectedEmail = 'c@asdf.com'
+c.id = 101
+c.email = expectedEmail
+c:save()
+c:reload()
+doTest( c.email, expectedEmail, 'ActiveRecord:save - insert a new record' )
 
 
 
