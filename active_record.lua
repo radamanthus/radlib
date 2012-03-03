@@ -79,12 +79,15 @@ end
 ------------------------------------------------------------------------------
 -- Returns all rows in the table that match the given filter
 ------------------------------------------------------------------------------
-function ActiveRecord.static:findAll( klass, filter, orderBy )
+function ActiveRecord.static:findAll( klass, params )
   local result = nil
-  if filter == nil then
-    result = orm.selectAll( klass.tableName, {order = orderBy} )
+  if params == nil then
+    params = {}
+  end
+  if params.where == nil then
+    result = orm.selectAll( klass.tableName, params )
   else
-    result = orm.selectWhere( klass.tableName, {where = filter, order = orderBy} )
+    result = orm.selectWhere( klass.tableName, params )
   end
   return result
 end

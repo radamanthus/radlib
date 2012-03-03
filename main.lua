@@ -232,8 +232,8 @@ local allUsers = User.static:findAll( User, nil )
 doTest( #allUsers, 5, 'ActiveRecord.static:findAll(nil)' )
 
 -- ActiveRecord.static:findAll with filter
-local filteredUsers = User.static:findAll( User, 'id > 3')
-doTest( #filteredUsers, 2, 'ActiveRecord.static:findAll(<filter>)' )
+local filteredUsers = User.static:findAll( User, {where = 'id > 3'})
+doTest( #filteredUsers, 2, 'ActiveRecord.static:findAll(<where_filter>)' )
 
 -- ActiveRecord.static:updateAttribute
 local updatedEmail = 'newcalvinemail@hobbes.com'
