@@ -10,7 +10,7 @@ local _ = require "underscore"
 local radlib = require "radlib"
 require "Test.More"
 
-plan(53)
+plan(56)
 
 local testCount = 0
 local expectedResult = nil
@@ -315,6 +315,18 @@ local aliens = _.select( objects,
   function(object) return("alien" == object.gender) end
 )
 doTest( #aliens, 1, "_.select" )
+
+local numberListWithNoDuplicates = { 1, 2, 3, 4 }
+local duplicateTestResult = radlib.table.hasDuplicateValues( numberListWithNoDuplicates, 1 )
+doTest( duplicateTestResult, false, "radlib.table.hasDuplicateValues" )
+
+local stringListWithNoDuplicates = { "dog", "cat", "pig" }
+local duplicateTestResult = radlib.table.hasDuplicateValues( stringListWithNoDuplicates, 1 )
+doTest( duplicateTestResult, false, "radlib.table.hasDuplicateValues" )
+
+local numberListWithDuplicates = { 1, 2, 3, 3, 4 }
+local duplicateTestResult = radlib.table.hasDuplicateValues( numberListWithDuplicates, 3 )
+doTest( duplicateTestResult, true, "radlib.table.hasDuplicateValues" )
 
 ------------------------------------------------------------------------------
 -- time_ext tests
