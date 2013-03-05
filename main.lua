@@ -10,7 +10,7 @@ local _ = require "underscore"
 local radlib = require "radlib"
 require "Test.More"
 
-plan(56)
+plan(61)
 
 local testCount = 0
 local expectedResult = nil
@@ -346,5 +346,30 @@ doTest( result, expectedResult, "radlib.time.formatTimeDuration" )
 expectedResult = "01:01:01"
 result = radlib.time.formatTimeDuration( 3661 )
 doTest( result, expectedResult, "radlib.time.formatTimeDuration" )
+
+------------------------------------------------------------------------------
+-- underscore tests
+------------------------------------------------------------------------------
+local tableList = {
+  {name = 'Carlos', type = 'alien'},
+  {name = 'Walter', type = 'robot'},
+  {name = 'Rad', type = 'human'},
+  {name = 'Erik', type = 'human'}
+}
+local getType = function( i )
+  return i.type
+end
+result = _.map( tableList, getType )
+doTest( 'alien', result[1], '_.map' )
+doTest( 'robot', result[2], '_.map' )
+doTest( 'human', result[3], '_.map' )
+doTest( 'human', result[4], '_.map' )
+
+local numberListWithDuplicates = { 1, 1, 2, 3, 4, 4 }
+expectedResult = 4
+local sortedList = _.sort( numberListWithDuplicates )
+local uniqueList = _.uniq( numberListWithDuplicates )
+result = #uniqueList
+doTest( result, expectedResult, "_.uniq - with blank sorted and iterator params")
 
 done_testing(testCount)
