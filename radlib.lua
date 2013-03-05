@@ -8,6 +8,9 @@ M.geometry = geometry
 local ioExt = require "io_ext"
 M.io = ioExt
 
+local screen = require "screen"
+M.screen = screen
+
 local stringExt = require "string_ext"
 M.string = stringExt
 
