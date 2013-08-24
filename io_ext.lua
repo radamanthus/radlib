@@ -3,6 +3,13 @@ local ltn12 = require("ltn12")
 
 local M = {}
 
+-- Takeon from http://stackoverflow.com/questions/4990990/lua-check-if-a-file-exists
+local fileExists = function( filename )
+   local f = io.open( filename, "r" )
+   if f ~= nil then io.close( f ) return true else return false end
+end
+M.fileExists = fileExists
+
 local json = require "json"
 local parseJson = function( filename )
   local file = io.open( filename, "r" )
